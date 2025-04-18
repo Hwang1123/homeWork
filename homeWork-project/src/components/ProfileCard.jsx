@@ -44,17 +44,17 @@ const user = [
   {
     user_name: "황윤창",
     age: 25,
-    isOnline: true
+    isOnline: false
   },
   {
     user_name: "황맹구",
     age: 27,
-    isOnline: false
+    isOnline: true
   },
   {
     user_name: "황짱구",
     age: 23,
-    isOnline: true
+    isOnline: false
   }
 ]
 
@@ -75,7 +75,7 @@ const ProfileCard = () => {
               <Td>{u.age}</Td>
               <Td>
                 <StatusText isOnline={u.isOnline}>
-                  {u.isOnline ? "🟢 온라인" : "🔴 오프라인"}
+                  {u.isOnline ? "🟢 온라인 상태입니다." : "🔴 오프라인 상태입니다."}
                 </StatusText>
               </Td>
             </Tr>
