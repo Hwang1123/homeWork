@@ -11,12 +11,10 @@ const Container = styled.div`
 `
 
 const ProfileImage = styled.img`
-  width: 120px;
-  height: 120px;
-  object-fit: cover;
-  border-radius: 50%;
-  margin-bottom: 20px;
-  border: 2px solid #ccc;
+   max-width: 400px;
+  height: auto;
+  border-radius: 8px;
+  margin: 20px 0;
 `
 
 const UserDetail = ({ users, setUsers }) => {
@@ -42,11 +40,15 @@ const UserDetail = ({ users, setUsers }) => {
       {user.profileUrl && (
         <ProfileImage src={user.profileUrl} alt={`${user.name} 프로필`} />
       )}
+      <p>이름: {user.name}</p>
       <p>나이: {user.age}</p>
       <p>성별: {user.gender}</p>
       <p>상태: {user.status}</p>
-      <button onClick={() => navigate('/')}>뒤로가기</button>
-      <button onClick={handleDelete}>유저 삭제</button>
+      <div>
+        <button onClick={() => navigate('/')}>뒤로가기</button>
+        <button onClick={handleDelete}>유저 삭제</button>
+      </div>
+      
     </Container>
   )
 }

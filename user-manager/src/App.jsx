@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom'
 
 const App = () => {
   const [users, setUsers] = useState([
-    { id: 1, name: 'Alice', age: 25, profileUrl:'', status: 'online', gender: 'F' },
+    { id: 1, name: 'Alice', age: 25, profileUrl:'', status: 'online', gender: 'FEMALE' },
   ])
 
   return (
