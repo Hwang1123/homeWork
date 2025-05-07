@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import axios from 'axios'
 import { Link } from 'react-router-dom'
 import useAuthStore from '../stores/useAuthStore'
+import LoadingSpinner from '../components/LoadingSpinner'
 
 const Container = styled.div`
   display: flex;
@@ -53,29 +54,39 @@ const PostCard = styled.div`
 const Home = () => {
   const { user } = useAuthStore()
   const [topPosts, setTopPosts] = useState([])
+  const [loading, setLoading] = useState(true); // 🔹 로딩 상태 추가
 
   useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const res = await axios.get('http://localhost:4000/posts')
-        const sorted = res.data.sort((a, b) => b.views - a.views).slice(0, 5)
-        setTopPosts(sorted)
-      } catch (err) {
-        console.error('게시글 조회 실패:', err)
-      }
-    }
-
-    fetchPosts()
-  }, [])
+    axios.get("http://localhost:4000/posts")
+      .then((res) => {
+        const sorted = [...res.data].sort((a, b) => (b.views || 0) - (a.views || 0));
+        setTopPosts(sorted.slice(0, 5));
+      })
+      .catch(err => {
+        console.error("게시글 로딩 오류:", err);
+      })
+      .finally(() => {
+        setTimeout(() => {
+          setLoading(false); // 🔹 최소 2.5초 후에 로딩 종료
+        }, 2000);
+      });
+  }, []);
 
   const getGenderText = (gender) => {
-    if (gender === 'MALE') return '남자'
-    if (gender === 'FEMALE') return '여자'
+    if (gender === 'male') return '남자'
+    if (gender === 'female') return '여자'
     return '미입력'
   }
 
+   // 🔹 로딩 화면
+   if (loading) {
+    return <LoadingSpinner />;
+  }
+
   return (
+    
     <Container>
+      
       <LeftSection>
         <h2>🔥 인기 게시글 TOP 5</h2>
         {topPosts.map(post => (

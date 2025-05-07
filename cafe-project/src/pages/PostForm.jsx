@@ -68,7 +68,8 @@ function PostForm({ isEdit }) {
 
   const onSubmit = async (data) => {
     const now = new Date().toISOString();
-    const postData = isEdit ? data : { ...data, createdAt: now };
+    const postData = isEdit ? data : { ...data, createdAt: now, views: 0 };
+
 
     try {
       if (isEdit) {

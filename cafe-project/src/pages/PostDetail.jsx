@@ -4,6 +4,9 @@ import axios from "axios";
 import styled from "styled-components";
 import { toast, ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import useAuthStore from "../stores/useAuthStore";
+import LoadingSpinner from "../components/LoadingSpinner";
+
 
 const DetailContainer = styled.div`
   max-width: 800px;
@@ -54,15 +57,30 @@ function PostDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [post, setPost] = useState(null);
+  const { user } = useAuthStore(); // 🔹 로그인 유저
 
   useEffect(() => {
-    axios.get(`http://localhost:4000/posts/${id}`)
-      .then(res => setPost(res.data))
-      .catch(err => {
-        toast.error("게시글을 불러오는 데 실패했습니다.");
-        console.error(err);
-      });
-  }, [id]);
+    if (!user) {
+      toast.warn("로그인 후 이용 가능합니다.", { autoClose: 3000 });
+      setTimeout(() => {
+        navigate("/login"); // 로그인 페이지로 리다이렉트
+      }, 3000);
+    } else {
+      const fetchPostAndIncreaseViews = async () => {
+        try {
+          const res = await axios.get(`http://localhost:4000/posts/${id}`);
+          const updatedViews = (res.data.views || 0) + 1;
+          await axios.patch(`http://localhost:4000/posts/${id}`, { views: updatedViews });
+          setPost({ ...res.data, views: updatedViews });
+        } catch (err) {
+          toast.error("게시글을 불러오는 데 실패했습니다.");
+          console.error(err);
+        }
+      };
+
+      fetchPostAndIncreaseViews();
+    }
+  }, [id, user, navigate]); // user와 navigate도 의존성에 포함시킴
 
   const handleDelete = async () => {
     if (window.confirm("정말 이 게시글을 삭제하시겠습니까?")) {
@@ -77,21 +95,27 @@ function PostDetail() {
     }
   };
 
-  if (!post) return <DetailContainer>게시글을 불러오는 중입니다...</DetailContainer>;
+  if (!post) return <LoadingSpinner /> //<DetailContainer>게시글을 불러오는 중입니다...</DetailContainer>;
+
+  const isAuthor = user.name === post.author;
 
   return (
     <DetailContainer>
       <Title>{post.title}</Title>
       <Meta>
-        작성자: {post.author} | 작성일: {new Date(post.createdAt).toLocaleString()}
+        작성자: {post.author} | 작성일: {new Date(post.createdAt).toLocaleString()} | 조회수: {post.views}
       </Meta>
       <Content>{post.content}</Content>
 
       <ButtonGroup>
-        <Link to={`/edit/${post.id}`}>
-          <StyledButton>수정</StyledButton>
-        </Link>
-        <StyledButton delete onClick={handleDelete}>삭제</StyledButton>
+        {isAuthor && (
+          <>
+            <Link to={`/edit/${post.id}`}>
+              <StyledButton>수정</StyledButton>
+            </Link>
+            <StyledButton delete onClick={handleDelete}>삭제</StyledButton>
+          </>
+        )}
         <StyledButton onClick={() => navigate("/posts")}>목록으로</StyledButton>
       </ButtonGroup>
 

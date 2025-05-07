@@ -2,7 +2,7 @@ import React from 'react'
 import { Link, useNavigate } from "react-router-dom"
 import styled from 'styled-components'
 import useAuthStore from '../stores/useAuthStore' // zustand store import
-import { GiWeightLiftingUp } from "react-icons/gi"
+import { GiThrownKnife } from "react-icons/gi";
 
 const Nav = styled.nav`
   height: 40px;
@@ -40,7 +40,7 @@ const Header = () => {
 
   return (
     <Nav>
-      <h2><GiWeightLiftingUp />헬스 갤러리<GiWeightLiftingUp /></h2>
+      <h2><GiThrownKnife />귀살대</h2>
 
       <div>
         <StyledLink to="/">🏠Home</StyledLink>

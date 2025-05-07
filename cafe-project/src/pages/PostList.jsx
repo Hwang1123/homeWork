@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import LoadingSpinner from "../components/LoadingSpinner";
+
 
 const StyledLink = styled(Link)`
   text-decoration: none;
@@ -17,10 +19,27 @@ const StyledLink = styled(Link)`
 
 function PostList() {
   const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true); // 🔹 로딩 상태 추가
 
   useEffect(() => {
-    axios.get("http://localhost:4000/posts").then((res) => setPosts(res.data));
+    const fetchPosts = async () => {
+      try {
+        const res = await axios.get("http://localhost:4000/posts");
+        setPosts(res.data);
+      } catch (error) {
+        console.error("게시글을 불러오는 중 오류 발생:", error);
+      } finally {
+        setTimeout(() => setLoading(false), 2500); // 🔹 2.5초 로딩 유지
+      }
+    };
+
+    fetchPosts();
   }, []);
+
+  // 🔹 로딩 중이면 로딩 스피너 표시
+  if (loading) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <div style={{ padding: "20px" }}>
@@ -40,7 +59,7 @@ function PostList() {
                 {post.title}
               </Link>
               <div style={{ fontSize: "14px", color: "#666" }}>
-                작성자: {post.author} | 작성일: {new Date(post.createdAt).toLocaleDateString()}
+                작성자: {post.author} | 작성일: {new Date(post.createdAt).toLocaleDateString()} | 조회수: {post.views || 0}
               </div>
             </li>
           ))}
