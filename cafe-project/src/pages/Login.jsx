@@ -51,12 +51,16 @@ const Login = () => {
     }
 
     try {
-      const res = await axios.get(`http://localhost:4000/users?id=${id}&pw=${pw}`)
-      if (res.data.length > 0) {
-        const user = res.data[0]
-        login(user) // <- Context에 로그인 정보 저장
-        toast.success(`${user.name}님 환영합니다!`)
-        setTimeout(() => navigate('/'), 2500) // 성공 후 1.5초 후 이동
+      const res = await axios.post('http://localhost:8888/api/members/login', {
+        userId: id,
+        userPwd: pw
+      })
+      console.log(res.status, res.data);
+      if (res.data && res.data.userId) {
+        const user = res.data
+        login(user)
+        toast.success(`${user.userName}님 환영합니다!`)
+        setTimeout(() => navigate('/'), 2500)
       } else {
         toast.error('ID 또는 비밀번호가 일치하지 않습니다.')
       }
