@@ -57,6 +57,7 @@ const Home = () => {
   const [loading, setLoading] = useState(true); // 🔹 로딩 상태 추가
 
   useEffect(() => {
+    // 인기 게시글 먼저 불러오기
     axios.get("http://localhost:4000/posts")
       .then((res) => {
         const sorted = [...res.data].sort((a, b) => (b.views || 0) - (a.views || 0));
@@ -64,17 +65,30 @@ const Home = () => {
       })
       .catch(err => {
         console.error("게시글 로딩 오류:", err);
-      })
-      .finally(() => {
-        setTimeout(() => {
-          setLoading(false); // 🔹 최소 2.5초 후에 로딩 종료
-        }, 2000);
       });
+  
+    // 로그인 유저 정보 백엔드에서 불러오기
+    if (user?.userId) {
+      axios.get(`http://localhost:8888/api/members/${user.userId}`)
+        .then(res => {
+          // user 상태를 갱신하거나 로컬 상태로 따로 저장해도 됨
+          useAuthStore.getState().login(res.data);
+          // 예: setUserInfo(fetchedUser) 또는 useAuthStore().login(fetchedUser)
+        })
+        .catch(err => {
+          console.error("유저 정보 조회 실패:", err);
+        })
+        .finally(() => {
+          setTimeout(() => setLoading(false), 2000);
+        });
+    } else {
+      setLoading(false);
+    }
   }, []);
 
   const getGenderText = (gender) => {
-    if (gender === 'male') return '남자'
-    if (gender === 'female') return '여자'
+    if (gender === 'M') return '남자'
+    if (gender === 'F') return '여자'
     return '미입력'
   }
 
@@ -104,7 +118,7 @@ const Home = () => {
         <RightSection>
           <ProfileCard>
             <Avatar src={user.profileUrl || 'https://via.placeholder.com/80'} alt="프로필" />
-            <h3>{user.name}님</h3>
+            <h3>{user.userName}님</h3>
             <Info>
               <p>나이: {user.age}</p>
               <p>성별: {getGenderText(user.gender)}</p>
