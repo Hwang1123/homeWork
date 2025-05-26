@@ -30,8 +30,8 @@ const ProfileCard = styled.div`
 `;
 
 const Avatar = styled.img`
-  width: 100px;
-  height: 100px;
+  width: 150px;
+  height: 150px;
   border-radius: 50%;
   margin-bottom: 10px;
   object-fit: cover;

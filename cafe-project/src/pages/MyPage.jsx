@@ -49,10 +49,10 @@ const MyPage = () => {
   const [isEditing, setIsEditing] = useState(false)
   const [userInfo, setUserInfo] = useState(null)
   const [formData, setFormData] = useState({
-    userName: '',
-    age: '',
-    gender: '',
-    profileUrl: ''
+    userName: "",
+    age: "",
+    gender: "",
+    profileUrl: ""
   })
 
   // ✅ useEffect는 항상 최상단에서 호출
@@ -86,9 +86,13 @@ const MyPage = () => {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }))
   }
 
+  const DEFAULT_PROFILE_IMAGE = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBwgHBhIUBw8QFRUVEBAPFRUQGBEVEA8VFh0WFxUVFxYYHiggHxonHRUVIjEiJSkrLi4uFyAzODUtNygtLisBCgoKDg0OGBAQGi0lHx0xLS0tLS0wKy0tLi0tMCstLS0tLS03LS0tLS03LSstLS0tKy0tLSstNzctLSstLTc3N//AABEIAOEA4QMBIgACEQEDEQH/xAAaAAEAAgMBAAAAAAAAAAAAAAAABAUCAwYB/8QAMxABAAECAwQHBwQDAAAAAAAAAAECAwQRcQUhMTJBUXKBkaHREyIjNGGxwRIzQvGS4fD/xAAZAQEBAQEBAQAAAAAAAAAAAAAAAgMBBAX/xAAbEQEBAAIDAQAAAAAAAAAAAAAAAQIRAzFBEv/aAAwDAQACEQMRAD8A6wB73zQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAerHC7PjLO//AI+rlunZLUC3aruT8OJnRIp2fiJ4xEazH4W1MRTGVMeD1H20nHFRVs/ERwiJ0n1aLlm5a/cpmPt4r4mImN590vHHOi0xWz6aozsbp6uidOpWTE0zvXLtnZY8AdcAAAAAAAAAAAAAAAAAAAbLNv2t2IjpnL1BO2bhso/XX3eqwIiIjdoMrdt5NQAcdAAELaOG/XR+qjjHH6wmhLos250bsVa9jfmI7tJaWzzgAAAAAAAAAAAAAAAAACZsunPE6UzP2j8oabsqcsTPZn8OXp3HtagMm4AAAAACs2tTldpnrpy8P7QE/a0/Ep0n/vJAa49Mc+wB1IAAAAAAAAAAAAAAAA3YS57LEUzPXlOk7mkB0Qi4DEe2tZVcY3T9Y6JSmNmnol2AAAAA0Yy/Fizu4zuj1C3Stx9z2mKnLo93w4+eaM9eNo89uwAAAAAAAAAAAAAAAAAAAGdq5VariaJ3rjC4qjERu3T1eikexunc5Zt3HLToRUWtoXqObKrXj4pNO06P5Uz3ZSj5rWZxOEGdp2/401d+UI93aN6vkyp03z4nzT7iwxOJt4en3uPREcZU967XeuZ1/wCo+jCZmqfe83i5jpnllsAdSAAAAAAAAAAAAAAAAAAAAAADKmmqrliZ0Zxh708KKvCQahtnD3o40VeEsKqaqeaJjUGIAAAAAAAAAAAAAAAAAAAAztWq7tWVuM/wsrGzqKd97fPVHBy2R2Y2q2i3Xcn3ImdEq3s67VzzEecrSmmKYypiIj6PUXNpOOeolvZ1mnmznyjyb6LFmjlpp8N7YObqpJABx0ABhXZtV89NM90NFez7FXCJjSfVKDbmorLmza4/bqidd0ol2zctT8SmY+3iviYiY3qmdTcI50W1/Z9uv9v3Z8ldesXLNXxI7+iVyys7jY1AOuAAAAAAAAAADdhcPViLmUcOmeppXmEsxYsRHTxnVzK6Vjjus7NqizRlbj1nVmDJsAAAAAAAAAAAAPK6Ka6cq4zh6ApsZhZw9Xu8s8Pp9JRl/etxdtTFXT5dUqGYmJ36NMbtjnjp4ApIAAAAAAAD2nmjV0LnqeaNXQozacfoAhoAAAAAAAAAAAAAAKPFbsTV2pXijxfzNXaleCOTppAWyAAAAAAAAZU80aw6Bz9PNGsOgRm04/QBDQAAAAAAAAAAAAAAUeL+Zq7UrxR4v5mrtSvBHJ00gLZAAAAAAAAMqeaNYdA5+jnjWHQIzacfoAhoAAAAAAAAAAAAAAKPF/M1dqV4o8X8zV2pXgjk6aQFsgAAAAAAAGVHPGsOgBGbTj9AENAAAAAAAAAAAAAABR4v5mrtSC8EcnTSAtkAAAA//9k="
+
   const handleUpdate = async () => {
     try {
-      const updated = { ...userInfo, ...formData }
+      const updated = { ...userInfo,
+                        ...formData,
+                        profileUrl: formData.profileUrl?.trim() === "" ? DEFAULT_PROFILE_IMAGE : formData.profileUrl }
 
       const res = await axios.put(`http://localhost:8888/api/members/${user.userId}`, updated)
 
