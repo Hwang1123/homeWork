@@ -6,6 +6,9 @@ import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED) //JPA 스펙상 필수 + 외부 생성 방지
@@ -33,6 +36,10 @@ public class Member {
     private String profileUrl;
 
     private Integer age;
+
+    //1 : N 연관관계 주인 = Board
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    List<Board> boards = new ArrayList<>();
 
 
     public enum Gender {

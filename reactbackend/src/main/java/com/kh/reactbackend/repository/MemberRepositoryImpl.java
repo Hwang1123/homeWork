@@ -23,7 +23,9 @@ public class MemberRepositoryImpl implements MemberRepository {
         em.persist(member); // 영속
     }
 
+    @Override
     public Optional<Member> findOne(String userId) {
+        System.out.println("조회하려는 userId = " + userId);
         return Optional.ofNullable(em.find(Member.class, userId));
     }
 

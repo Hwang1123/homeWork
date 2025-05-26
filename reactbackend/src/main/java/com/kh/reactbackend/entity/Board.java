@@ -1,5 +1,6 @@
 package com.kh.reactbackend.entity;
 
+import com.kh.reactbackend.enums.CommonEnums;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -35,5 +36,30 @@ public class Board {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private Member member;
+
+    public void changeMember(Member member) {
+        this.member = member;
+        if(!member.getBoards().contains(this)) {
+            member.getBoards().add(this);
+        }
+    }
+
+    public void changeContent(String boardContent) {
+        if(boardContent != null && !boardContent.isEmpty()) {
+            this.boardContent = boardContent;
+        }
+    }
+
+    public void changeTitle(String boardTitle) {
+        if(boardTitle != null && !boardTitle.isEmpty()) {
+            this.boardTitle = boardTitle;
+        }
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        this.createDate = LocalDateTime.now();
+        this.count = 0;
+    }
 
 }
